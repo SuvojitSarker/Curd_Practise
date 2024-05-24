@@ -109,7 +109,7 @@ class _UpdateNewProductItemScreenState extends State<UpdateNewProductItemScreen>
                     onPressed: () {
                       if(_formkey.currentState!.validate()){
                       }
-                    }, child: Text('Add'),),
+                    }, child: Text('Update'),),
               ],
             ),
           ),

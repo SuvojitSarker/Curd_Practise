@@ -26,7 +26,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context,
+            context,
             MaterialPageRoute(
               builder: (context) => const AddNewProductItemScreen(),
             ),
@@ -66,11 +66,39 @@ class _ProductListScreenState extends State<ProductListScreen> {
             icon: Icon(Icons.edit),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              _showDeleteConfirmationDialogue();
+            },
             icon: Icon(Icons.delete_rounded),
           ),
         ],
       ),
+    );
+  }
+
+  void _showDeleteConfirmationDialogue() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete'),
+          content: Text('Are You Sure Want to Delete?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
