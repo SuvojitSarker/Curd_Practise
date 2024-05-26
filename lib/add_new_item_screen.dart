@@ -183,9 +183,6 @@ class _AddNewProductItemScreenState extends State<AddNewProductItemScreen> {
     _addNewProductInProgress = false;
     setState(() {});
 
-    //TODO : From clear after add
-    //TODO : AddButton should be in progress after click (loading)
-    //TODO : Toast / SnackBar
 
     if (response.statusCode == 200) {
       _nameTEController.clear();
