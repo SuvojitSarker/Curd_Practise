@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -12,14 +11,16 @@ class AddNewProductItemScreen extends StatefulWidget {
 }
 
 class _AddNewProductItemScreenState extends State<AddNewProductItemScreen> {
-
   final TextEditingController _nameTEController = TextEditingController();
   final TextEditingController _unitTEController = TextEditingController();
   final TextEditingController _quantityTEController = TextEditingController();
   final TextEditingController _totalPriceTEController = TextEditingController();
   final TextEditingController _imageTEController = TextEditingController();
-  final TextEditingController _productCodeTEController = TextEditingController();
+  final TextEditingController _productCodeTEController =
+      TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+
+  bool _addNewProductInProgress = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,99 +38,113 @@ class _AddNewProductItemScreenState extends State<AddNewProductItemScreen> {
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: _nameTEController,
-                  decoration: InputDecoration(
-                    hintText: 'Name',
-                    labelText: 'Name'
-                  ),
-                  validator: (String? value){
-                    if(value==null || value.trim().isEmpty){
+                  decoration:
+                      InputDecoration(hintText: 'Name', labelText: 'Name'),
+                  validator: (String? value) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Write Your Produce Name';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16,),
+                SizedBox(
+                  height: 16,
+                ),
                 TextFormField(
                   controller: _unitTEController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      hintText: 'Unit Price',
-                      labelText: 'Unit Price'
-                  ),
-                  validator: (String? value){
-                    if(value==null || value.trim().isEmpty){
+                      hintText: 'Unit Price', labelText: 'Unit Price'),
+                  validator: (String? value) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Write Your Produce Price';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16,),
+                SizedBox(
+                  height: 16,
+                ),
                 TextFormField(
                   controller: _productCodeTEController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                      hintText: 'Product Code',
-                      labelText: 'Product Code'
-                  ),
-                  validator: (String? value){
-                    if(value==null || value.trim().isEmpty){
+                      hintText: 'Product Code', labelText: 'Product Code'),
+                  validator: (String? value) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Write Your Product Code';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16,),
+                SizedBox(
+                  height: 16,
+                ),
                 TextFormField(
                   controller: _quantityTEController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      hintText: 'Quantity',
-                      labelText: 'Quantity'
-                  ),
-                  validator: (String? value){
-                    if(value==null || value.trim().isEmpty){
+                      hintText: 'Quantity', labelText: 'Quantity'),
+                  validator: (String? value) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Write Your Quantity';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16,),
+                SizedBox(
+                  height: 16,
+                ),
                 TextFormField(
                   controller: _totalPriceTEController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      hintText: 'Total Price',
-                      labelText: 'Total Price'
-                  ),
-                  validator: (String? value){
-                    if(value==null || value.trim().isEmpty){
+                      hintText: 'Total Price', labelText: 'Total Price'),
+                  validator: (String? value) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'Write Your total price';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16,),
+                SizedBox(
+                  height: 16,
+                ),
 
                 TextFormField(
                   controller: _imageTEController,
-                  decoration: InputDecoration(
-                      hintText: 'image',
-                      labelText: 'image'
-                  ),
-                  validator: (String? value){
-                    if(value==null || value.trim().isEmpty){
+                  decoration:
+                      InputDecoration(hintText: 'image', labelText: 'image'),
+                  validator: (String? value) {
+                    if (value == null || value.trim().isEmpty) {
                       return 'please input an image';
                     }
                     return null;
                   },
                 ),
-                SizedBox(height: 16,),
-                ElevatedButton(
+                SizedBox(
+                  height: 16,
+                ),
+                // ElevatedButton(
+                //     onPressed: () {
+                //       if(_formkey.currentState!.validate()){
+                //         _addProduct();
+                //       }
+                //     }, child: Text('Add'),),
+                Visibility(
+                  visible: _addNewProductInProgress == false,
+                  replacement: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  child: ElevatedButton(
                     onPressed: () {
-                      if(_formkey.currentState!.validate()){
+                      if (_formkey.currentState!.validate()) {
                         _addProduct();
                       }
-                    }, child: Text('Add'),),
+                    },
+                    child: Text('Add'),
+                  ),
+                )
               ],
             ),
           ),
@@ -139,6 +154,8 @@ class _AddNewProductItemScreenState extends State<AddNewProductItemScreen> {
   }
 
   Future<void> _addProduct() async {
+    _addNewProductInProgress = true;
+    setState(() {});
     //step 1 : set url
     const String addNewProductUrl =
         'https://crud.teamrabbil.com/api/v1/CreateProduct';
@@ -162,12 +179,39 @@ class _AddNewProductItemScreenState extends State<AddNewProductItemScreen> {
     print(response.statusCode);
     print(response.body);
     print(response.headers);
+
+    _addNewProductInProgress = false;
+    setState(() {});
+
+    //TODO : From clear after add
+    //TODO : AddButton should be in progress after click (loading)
+    //TODO : Toast / SnackBar
+
+    if (response.statusCode == 200) {
+      _nameTEController.clear();
+      _unitTEController.clear();
+      _productCodeTEController.clear();
+      _quantityTEController.clear();
+      _totalPriceTEController.clear();
+      _imageTEController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text(
+            'New Product Added',
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Adding Failed , Try Again.'),
+        ),
+      );
+    }
   }
-
-  //TODO : From clear after add
-  //TODO : AddButton should be in progress after click (loading)
-  //TODO : Toast / SnackBar
-
 
   @override
   void dispose() {
